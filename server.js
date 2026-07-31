@@ -1,11 +1,36 @@
 const express = require('express');
-const app = express();
-const PORT = 3000;
+const Database = require('better-sqlite3');
 const swaggerUi = require('swagger-ui-express');
 const openapiDocument = require('./openapi.json');
+const app = express();
+const PORT = 3000;
+
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiDocument));
 
 app.use(express.json()); 
+
+// Connect to (or create) SQLite database file
+const db = new Database('tasks.db');
+
+// Create the tasks table if it does not exist
+db.exec(`
+  CREATE TABLE IF NOT EXISTS tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    done INTEGER NOT NULL DEFAULT 0
+  )
+`);
+
+// Seed 3 initial tasks ONLY IF table is empty
+const countStmt = db.prepare('SELECT COUNT(*) AS count FROM tasks');
+const { count } = countStmt.get();
+
+if (count === 0) {
+  const insertStmt = db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)');
+  insertStmt.run('Learn Express', 1);
+  insertStmt.run('Build CRUD API', 0);
+  insertStmt.run('Connect to SQLite', 0);
+}
 
 app.get('/', (req, res) => {
   res.json({ "name": "Task API", "version": "1.0", "endpoints": ["/tasks"] });
