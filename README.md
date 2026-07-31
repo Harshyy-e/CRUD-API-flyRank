@@ -1,6 +1,12 @@
-# FlyRank Task CRUD API
+# FlyRank Task CRUD API (SQLite Backed)
 
-A simple REST API built with Node.js and Express that manages a to-do list in-memory.
+A REST API built with Node.js, Express, and SQLite that manages a persistent to-do list.
+
+## Why SQLite?
+We transitioned from an in-memory storage array to **SQLite** because SQLite provides persistent storage directly on disk inside a single file (`tasks.db`). It requires zero server setup, is lightweight, and ensures our data survives server restarts without needing a complex database cluster.
+
+## Database Location
+The database is automatically created as `tasks.db` in the root folder when the app runs for the first time. It is added to `.gitignore` so fresh clones start clean with the seed data.
 
 ## How to Run
 1. Install dependencies: `npm install`
@@ -8,6 +14,7 @@ A simple REST API built with Node.js and Express that manages a to-do list in-me
 3. View Swagger Docs: Visit `http://localhost:3000/docs` in your browser.
 
 ## Endpoints
+
 | CRUD Operation | HTTP Method | Endpoint | Meaning |
 | --- | --- | --- | --- |
 | Read | GET | `/` | API Info |
@@ -18,6 +25,7 @@ A simple REST API built with Node.js and Express that manages a to-do list in-me
 | Update | PUT | `/tasks/:id` | Update task by ID |
 | Delete | DELETE | `/tasks/:id` | Remove task by ID |
 
-## Example curl Command
-```bash
-curl -i -X POST http://localhost:3000/tasks -H "Content-Type: application/json" -d '{"title":"Buy milk"}'
+## Example Hand-Run SQL Query
+Executed directly in DB Browser for SQLite:
+```sql
+SELECT * FROM tasks WHERE done = 1;
