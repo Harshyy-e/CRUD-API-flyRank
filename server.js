@@ -48,14 +48,21 @@ let tasks = [
 let nextId = 4;
 
 app.get('/tasks', (req, res) => {
+  const stmt = db.prepare('SELECT * FROM tasks');
+  const tasks = stmt.all().map(t => ({ ...t, done: Boolean(t.done) }));
   res.status(200).json(tasks);
 });
 
 app.get('/tasks/:id', (req, res) => {
   const id = parseInt(req.params.id);
-  const task = tasks.find(t => t.id === id);
-  if (!task) return res.status(404).json({ "error": `Task ${id} not found` });
-  res.status(200).json(task);
+  const stmt = db.prepare('SELECT * FROM tasks WHERE id = ?');
+  const task = stmt.get(id);
+
+  if (!task) {
+    return res.status(404).json({ "error": `Task ${id} not found` });
+  }
+
+  res.status(200).json({ ...task, done: Boolean(task.done) });
 });
 
 app.post('/tasks', (req, res) => {
