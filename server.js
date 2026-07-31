@@ -32,3 +32,26 @@ async function initDb() {
   }
 }
 initDb().catch(console.error);
+
+app.get('/tasks', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM tasks ORDER BY id ASC;');
+    res.status(200).json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/tasks/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const result = await pool.query('SELECT * FROM tasks WHERE id = $1;', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: `Task ${id} not found` });
+    }
+    res.status(200).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
