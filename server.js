@@ -55,3 +55,47 @@ app.get('/tasks/:id', async (req, res) => {
   }
 });
 
+app.post('/tasks', async (req, res) => {
+  const { title } = req.body;
+  if (!title || title.trim() === "") {
+    return res.status(400).json({ error: "Title is required" });
+  }
+  const result = await pool.query(
+    'INSERT INTO tasks (title, done) VALUES ($1, $2) RETURNING *;',
+    [title, false]
+  );
+  res.status(201).json(result.rows[0]);
+});
+
+app.put('/tasks/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { title, done } = req.body;
+
+  if (title === undefined && done === undefined) {
+    return res.status(400).json({ error: "Invalid body" });
+  }
+
+  const check = await pool.query('SELECT * FROM tasks WHERE id = $1;', [id]);
+  if (check.rows.length === 0) {
+    return res.status(404).json({ error: `Task ${id} not found` });
+  }
+
+  const updatedTitle = title !== undefined ? title : check.rows[0].title;
+  const updatedDone = done !== undefined ? done : check.rows[0].done;
+
+  const result = await pool.query(
+    'UPDATE tasks SET title = $1, done = $2 WHERE id = $3 RETURNING *;',
+    [updatedTitle, updatedDone, id]
+  );
+  res.status(200).json(result.rows[0]);
+});
+
+app.delete('/tasks/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+  const result = await pool.query('DELETE FROM tasks WHERE id = $1;', [id]);
+  if (result.rowCount === 0) {
+    return res.status(404).json({ error: `Task ${id} not found` });
+  }
+  res.status(204).send();
+});
+
