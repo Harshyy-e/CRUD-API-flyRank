@@ -22,8 +22,8 @@ app.get('/public/info', (req, res) => {
   res.status(200).json({ message: "Welcome stranger! This info is public." });
 });
 
-// GET /protected/profile (Stage 2: Checks token header existence only)
-app.get('/protected/profile', (req, res) => {
+// GET /protected/profile (Stage 3: Verified with Supabase)
+app.get('/protected/profile', async (req, res) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -35,8 +35,20 @@ app.get('/protected/profile', (req, res) => {
     return res.status(401).json({ error: "Access token required" });
   }
 
-  res.status(200).json({ message: "Token format valid (unverified for now)" });
+  // Ask Supabase to verify the token
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+
+  if (error || !user) {
+    return res.status(401).json({ error: "Invalid or expired token" });
+  }
+
+  res.status(200).json({
+    id: user.id,
+    email: user.email,
+    created_at: user.created_at
+  });
 });
+
 
 app.listen(PORT, () => {
   console.log(`Server running and connected to Supabase on http://localhost:${PORT}`);
