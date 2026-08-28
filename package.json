@@ -1,20 +1,8 @@
 {
-  "name": "flyrank-task-api",
+  "name": "flyrank-polite-scraper",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.112.4",
-    "better-sqlite3": "^13.0.2",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "pg": "^8.22.0",
-    "swagger-ui-express": "^5.0.1"
+    "start": "node src/index.js"
   }
 }
