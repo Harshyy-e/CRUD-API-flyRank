@@ -7,6 +7,11 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+const swaggerUi = require('swagger-ui-express');
+const openapiDocument = require('./openapi.json');
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiDocument));
+
 // Initialize Supabase Client
 const supabase = createClient(
   process.env.SUPABASE_URL,
