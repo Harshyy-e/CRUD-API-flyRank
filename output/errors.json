@@ -1,0 +1,6 @@
+[
+  {
+    "url": "https://books.toscrape.com/catalogue/non-existent-broken-book_9999/index.html",
+    "error": "HTTP Error 404 for https://books.toscrape.com/catalogue/non-existent-broken-book_9999/index.html"
+  }
+]

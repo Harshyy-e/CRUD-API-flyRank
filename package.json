@@ -4,5 +4,9 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "zod": "^4.5.1"
   }
 }
