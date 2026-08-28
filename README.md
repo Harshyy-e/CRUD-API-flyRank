@@ -6,7 +6,7 @@ A REST API built with Node.js, Express, and PostgreSQL running in Docker contain
 We transitioned from SQLite to a **containerized PostgreSQL** database server. PostgreSQL is a full-featured, production-ready relational database management system. Running it inside a Docker container ensures consistent behavior across all developer environments without requiring manual local database installations.
 
 ## Environment & Secrets Management
-Sensitive credentials (database URL, user, password) are loaded securely from environment variables defined in a `.env` file. 
+Sensitive credentials (database URL, user, password) are loaded securely from environment variables defined in a `.env` file.
 - `.env` is listed in `.gitignore` to prevent leaking secrets to GitHub.
 - `.env.example` is committed as a reference template for required configuration keys.
 
